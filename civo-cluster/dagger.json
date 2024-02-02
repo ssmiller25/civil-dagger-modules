@@ -1,0 +1,9 @@
+{
+  "name": "civo-cluster",
+  "sdk": "go",
+  "root-for": [
+    {
+      "source": "."
+    }
+  ]
+}
