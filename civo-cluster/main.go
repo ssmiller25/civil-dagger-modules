@@ -6,6 +6,10 @@ import (
 	"time"
 )
 
+const (
+	civoVersion = "1.0.73"
+)
+
 type CivoCluster struct{}
 
 // example usage: "dagger call cluster-list --api-key <api-key>"
@@ -43,6 +47,16 @@ func (m *CivoCluster) ClusterShow(ctx context.Context,
 		Stdout(ctx)
 }
 
+func (m *CivoCluster) Version(ctx context.Context) (string, error) {
+	c, err := civoContainer(ctx, nil)
+	if err != nil {
+		return "", err
+	}
+	return c.
+		WithExec([]string{"version"}).
+		Stdout(ctx)
+}
+
 func civoContainer(ctx context.Context, apiToken *Secret) (*Container, error) {
 	platform, err := dag.DefaultPlatform(ctx)
 	if err != nil {
@@ -50,14 +64,19 @@ func civoContainer(ctx context.Context, apiToken *Secret) (*Container, error) {
 	}
 	platfromSplit := strings.SplitN(string(platform), "/", 2)
 
-	return dag.Container().
+	container := dag.Container().
 		From("alpine:latest").
 		WithExec([]string{"apk", "add", "curl"}).
 		WithExec([]string{"curl", "-L", "-o", "/tmp/civo.tar.gz", "https://github.com/civo/cli/releases/download/v1.0.73/civo-1.0.73-" + platfromSplit[0] + "-" + platfromSplit[1] + ".tar.gz"}).
 		WithExec([]string{"tar", "-xvf", "/tmp/civo.tar.gz", "-C", "/tmp"}).
 		WithExec([]string{"mv", "/tmp/civo", "/usr/local/bin/civo"}).
 		WithExec([]string{"chmod", "+x", "/usr/local/bin/civo"}).
-		WithSecretVariable("CIVO_TOKEN", apiToken).
-		WithEntrypoint([]string{"civo"}), nil
+		WithEntrypoint([]string{"civo"})
+
+	if apiToken != nil {
+		container = container.WithSecretVariable("CIVO_TOKEN", apiToken)
+	}
+
+	return container, nil
 
 }
