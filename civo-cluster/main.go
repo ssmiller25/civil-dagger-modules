@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	civoVersion = "1.0.73"
+	civoVersion = "1.0.75"
 )
 
 type CivoCluster struct{}
@@ -57,7 +57,7 @@ func civoContainer(apiToken *Secret) *Container {
 	container := dag.Container().
 		From("alpine:latest").
 		WithExec([]string{"apk", "add", "curl"}).
-		WithExec([]string{"curl", "-L", "-o", "/tmp/civo.tar.gz", "https://github.com/civo/cli/releases/download/v1.0.73/civo-1.0.73-" + platformSplit[0] + "-" + platformSplit[1] + ".tar.gz"}).
+		WithExec([]string{"curl", "-L", "-o", "/tmp/civo.tar.gz", "https://github.com/civo/cli/releases/download/v" + civoVersion + "/civo-" + civoVersion + "-" + platformSplit[0] + "-" + platformSplit[1] + ".tar.gz"}).
 		WithExec([]string{"tar", "-xvf", "/tmp/civo.tar.gz", "-C", "/tmp"}).
 		WithExec([]string{"mv", "/tmp/civo", "/usr/local/bin/civo"}).
 		WithExec([]string{"chmod", "+x", "/usr/local/bin/civo"}).
