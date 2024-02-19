@@ -1,3 +1,5 @@
+// Functions for working with k3s clusters in Civo 
+
 package main
 
 import (
@@ -12,7 +14,7 @@ const (
 
 type CivoCluster struct{}
 
-// example usage: "dagger call cluster-list --api-key <api-key> --region <region>"
+// example usage: "dagger call cluster-list --api-key <env var name> --region <region>"
 func (m *CivoCluster) ClusterList(ctx context.Context,
 	// apiKey API key used to against the Civo API. Found at https://dashboard.civo.com/account/api
 	apiToken *Secret,
@@ -27,6 +29,7 @@ func (m *CivoCluster) ClusterList(ctx context.Context,
 		Stdout(ctx)
 }
 
+// example usage: "dagger call cluster-show --api-key <env var name> --region <region> --name <cluster name from cluster-list>"
 func (m *CivoCluster) ClusterShow(ctx context.Context,
 	apiToken *Secret,
 	region string,
@@ -39,6 +42,7 @@ func (m *CivoCluster) ClusterShow(ctx context.Context,
 		Stdout(ctx)
 }
 
+// example usage: "dagger call version"
 func (m *CivoCluster) Version(ctx context.Context) (string, error) {
 	c := civoContainer(nil)
 	return c.
@@ -46,6 +50,7 @@ func (m *CivoCluster) Version(ctx context.Context) (string, error) {
 		Stdout(ctx)
 }
 
+// private function for Container with civo CLI
 func civoContainer(apiToken *Secret) *Container {
 	ctx := context.Background()
 	platform, err := dag.DefaultPlatform(ctx)
