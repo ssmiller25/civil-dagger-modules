@@ -2,6 +2,8 @@
 
 A collection of dagger modules to interact with [Civo](https://www.civo.com/).
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/civo/dagger-modules?quickstart=1)
+
 ## Civo Cluster
 
 Interact with Civo Kubernetes clusters.
