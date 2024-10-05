@@ -11,5 +11,6 @@ Interact with Civo Kubernetes clusters.
 ***List Clusters***
 
 ```bash
+cd civo-cluster
 dagger call cluster-list --api-token env:CIVO_TOKEN --region lon1
 ```
